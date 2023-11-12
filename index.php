@@ -13,6 +13,7 @@ require_once __DIR__ . '/functions.php';
 
 /**
  * @var $keyboard1
+ * @var $keyboard2
  * @var $inline_keyboard1
  */
 

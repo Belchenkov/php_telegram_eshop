@@ -18,3 +18,13 @@ function send_request(string $url): mixed
     ));
 }
 
+function check_chat_id(int $chat_id): bool {
+    global $pdo;
+
+    $stmt = $pdo->prepare('SELECT COUNT(*) FROM subscribers WHERE chat_id = ?');
+
+    $stmt->execute([$chat_id]);
+
+    return (bool)$stmt->fetchColumn();
+}
+

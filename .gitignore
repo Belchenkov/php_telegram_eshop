@@ -3,3 +3,4 @@
 errors.log
 logs.log
 config.php
+/vendor/
