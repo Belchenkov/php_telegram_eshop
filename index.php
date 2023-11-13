@@ -31,11 +31,13 @@ if (!$chat_id) {
 }
 
 if ($text === '/start') {
+    $keyboard = check_chat_id($chat_id) ? $keyboard2 : $keyboard1;
+
     $telegram->sendMessage([
         'chat_id' => $chat_id,
         'text' => sprintf($phrases['start'], $name),
         'parse_mode' => 'HTML',
-        'reply_markup' => new \Telegram\Bot\Keyboard\Keyboard($keyboard1),
+        'reply_markup' => new \Telegram\Bot\Keyboard\Keyboard($keyboard),
     ]);
 
     $telegram->sendMessage([
@@ -47,9 +49,41 @@ if ($text === '/start') {
 } elseif (isset($update['message']['web_app_data'])) {
     $btn = $update['message']['web_app_data']['button_text'];
     $data = json_decode($update['message']['web_app_data']['data'], 1);
+
+    if (!check_chat_id($chat_id) && !empty($data['name']) && !empty($data['email'])) {
+        if (add_subscriber($chat_id, $data)) {
+            $telegram->sendMessage([
+                'chat_id' => $chat_id,
+                'text' => $phrases['success_subscribe'],
+                'parse_mode' => 'HTML',
+                'reply_markup' => new \Telegram\Bot\Keyboard\Keyboard($keyboard2),
+            ]);
+        } else {
+            $telegram->sendMessage([
+                'chat_id' => $chat_id,
+                'text' => $phrases['error_subscribe'],
+                'parse_mode' => 'HTML',
+                'reply_markup' => new \Telegram\Bot\Keyboard\Keyboard($keyboard1),
+            ]);
+        }
+    } else {
+        $telegram->sendMessage([
+            'chat_id' => $chat_id,
+            'text' => $phrases['error'],
+            'parse_mode' => 'HTML',
+            'reply_markup' => new \Telegram\Bot\Keyboard\Keyboard($keyboard1),
+        ]);
+    }
+
     $telegram->sendMessage([
         'chat_id' => $chat_id,
         'text' => "Button: {$btn}" . PHP_EOL . "<pre>" . print_r($data, 1) . "</pre>",
+        'parse_mode' => 'HTML',
+    ]);
+} else {
+    $telegram->sendMessage([
+        'chat_id' => $chat_id,
+        'text' => $phrases['error'],
         'parse_mode' => 'HTML',
     ]);
 }

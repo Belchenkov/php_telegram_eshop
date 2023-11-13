@@ -28,3 +28,12 @@ function check_chat_id(int $chat_id): bool {
     return (bool)$stmt->fetchColumn();
 }
 
+function add_subscriber(int $chat_id, array $data): bool {
+    global $pdo;
+
+    $stmt = $pdo->prepare('INSERT INTO subscribers (chat_id, name, email) VALUES (?, ?, ?)');
+
+    return $stmt->execute([$chat_id, $data['name'], $data['email']]);
+
+}
+
