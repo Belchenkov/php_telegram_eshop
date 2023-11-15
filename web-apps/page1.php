@@ -42,12 +42,12 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-	const tg = window.Telegram.WebApp;
-	// console.log(tg);
-	tg.ready();
-	tg.expand();
+    const tg = window.Telegram.WebApp;
+    // console.log(tg);
+    tg.ready();
+    tg.expand();
 
-	/*document.getElementById('close-app').addEventListener('click', () => {
+    /*document.getElementById('close-app').addEventListener('click', () => {
         tg.close();
     });
 
@@ -64,65 +64,65 @@
         }
     });*/
 
-	// tg.MainButton.show();
-	/*tg.MainButton.onClick(() => {
+    // tg.MainButton.show();
+    /*tg.MainButton.onClick(() => {
         tg.showAlert('Hello');
     });*/
-	/*tg.onEvent('mainButtonClicked', () => {
+    /*tg.onEvent('mainButtonClicked', () => {
         tg.showAlert('Hello 2');
     });*/
 
-	const nameInput = document.getElementById('name');
-	const emailInput = document.getElementById('email');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
 
-	const data = {name: "", email: ""};
+    const data = {name: "", email: ""};
 
-	tg.onEvent('mainButtonClicked', () => {
-		tg.sendData(JSON.stringify(data));
-	});
+    tg.onEvent('mainButtonClicked', () => {
+        tg.sendData(JSON.stringify(data));
+    });
 
-	nameInput.addEventListener("input", () => {
-		let val = nameInput.value.trim();
-		if (val === '') {
-			data.name = '';
-			toggleClass(nameInput, 'is-invalid', 'is-valid');
-		} else {
-			data.name = val;
-			toggleClass(nameInput, 'is-valid', 'is-invalid');
-		}
-		checkForm();
-	});
+    nameInput.addEventListener("input", () => {
+        let val = nameInput.value.trim();
+        if (val === '') {
+            data.name = '';
+            toggleClass(nameInput, 'is-invalid', 'is-valid');
+        } else {
+            data.name = val;
+            toggleClass(nameInput, 'is-valid', 'is-invalid');
+        }
+        checkForm();
+    });
 
-	emailInput.addEventListener("input", () => {
-		let val = emailInput.value.trim();
-		const re = /\w+@\w+\.\w{2,6}/;
-		if (re.test(val)) {
-			data.email = val;
-			toggleClass(emailInput, 'is-valid', 'is-invalid');
-		} else {
-			data.email = '';
-			toggleClass(emailInput, 'is-invalid', 'is-valid');
-		}
-		checkForm();
-	});
+    emailInput.addEventListener("input", () => {
+        let val = emailInput.value.trim();
+        const re = /\w+@\w+\.\w{2,6}/;
+        if (re.test(val)) {
+            data.email = val;
+            toggleClass(emailInput, 'is-valid', 'is-invalid');
+        } else {
+            data.email = '';
+            toggleClass(emailInput, 'is-invalid', 'is-valid');
+        }
+        checkForm();
+    });
 
-	function checkForm() {
-		if (!data.name || !data.email) {
-			tg.MainButton.hide();
-		} else {
-			tg.MainButton.setParams({
-				text: "Send Form",
-				color: '#d260aa',
-				text_color: '#fff'
-			});
-			tg.MainButton.show();
-		}
-	}
+    function checkForm() {
+        if (!data.name || !data.email) {
+            tg.MainButton.hide();
+        } else {
+            tg.MainButton.setParams({
+                text: "Send Form",
+                color: '#d260aa',
+                text_color: '#fff'
+            });
+            tg.MainButton.show();
+        }
+    }
 
-	function toggleClass(field, class_add, class_remove) {
-		field.classList.add(class_add);
-		field.classList.remove(class_remove);
-	}
+    function toggleClass(field, class_add, class_remove) {
+        field.classList.add(class_add);
+        field.classList.remove(class_remove);
+    }
 
 </script>
 </body>

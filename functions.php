@@ -44,3 +44,18 @@ function delete_subscriber(int $chat_id): bool {
     return $stmt->execute([$chat_id]);
 }
 
+function get_products(int $start, int $per_page): array
+{
+    global $pdo;
+
+    $stmt = $pdo->prepare("SELECT * FROM products LIMIT $start, $per_page");
+    $stmt->execute();
+
+    return $stmt->fetchAll();
+}
+
+function get_start(int $page, int $per_page): int
+{
+    return ($page - 1) * $per_page;
+}
+
