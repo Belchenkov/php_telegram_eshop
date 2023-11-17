@@ -48,7 +48,7 @@ if (isset($_GET['page'])) {
         <div class="col-12">
 
             <nav class="fixed-top">
-                <div class="nav nav-tabs animate__animated animate__fadeInDown" id="nav-tab" role="tablist">
+                <div class="nav nav-tabs animate__animated animate__fadeIn" id="nav-tab" role="tablist">
                     <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#nav-store" type="button"
                             role="tab">Store
                     </button>
