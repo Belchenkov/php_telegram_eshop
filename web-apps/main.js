@@ -37,9 +37,22 @@ function add2Cart(product) {
         cart[id]['qty'] = 1;
     }
     getCart(cart);
+    getCartSum(cart);
+}
+
+function getCartSum(items) {
+    const cartSum = Object.entries(items).reduce((total, values) => {
+        const [key, value] = values;
+        return total + (value['gty'] * value['price']);
+    }, 0);
+
+    document.querySelector('.cart-sum').innerText = cartSum + '$';
+
+    return cartSum;
 }
 
 const cart = getCart();
+getCartSum(cart);
 
 // Add listener for add product
 productsContainer.addEventListener('click', (e) => {
