@@ -17,18 +17,24 @@ async function showProducts() {
     }
 }
 
-function getCart(setCart = false) {
-    const cartStorage = localStorage.getItem('cart');
+loaderBtn.addEventListener('click', () => {
+    loaderImg.classList.add('d-inline-block');
+    setTimeout(() => {
+         page++;
+         showProducts();
+         loaderImg.classList.remove('d-inline-block');
+    }, 1000);
+});
 
+function getCart(setCart = false) {
     if (setCart) {
         localStorage.setItem('cart', JSON.stringify(setCart));
     }
-
-    return cartStorage ? JSON.parse(cartStorage) : {};
+    return localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : {};
 }
 
 function add2Cart(product) {
-    const id = product.id;
+    let id = product.id;
     if (id in cart) {
         // console.log(cart[id]['qty'], id);
         cart[id]['qty'] += 1;
@@ -41,17 +47,15 @@ function add2Cart(product) {
 }
 
 function getCartSum(items) {
-    const cartSum = Object.entries(items).reduce((total, values) => {
+    let cartSum = Object.entries(items).reduce(function (total, values) {
         const [key, value] = values;
-        return total + (value['gty'] * value['price']);
+        return total + (value['qty'] * value['price']);
     }, 0);
-
     document.querySelector('.cart-sum').innerText = cartSum + '$';
-
     return cartSum;
 }
 
-const cart = getCart();
+let cart = getCart();
 getCartSum(cart);
 
 // Add listener for add product
@@ -65,13 +69,4 @@ productsContainer.addEventListener('click', (e) => {
             e.target.classList.remove('animate__rubberBand');
         }, 1000);
     }
-});
-
-loaderBtn.addEventListener('click', () => {
-    loaderImg.classList.add('d-inline-block');
-    setTimeout(() => {
-         page++;
-         showProducts();
-         loaderImg.classList.remove('d-inline-block');
-    }, 1000);
 });
