@@ -21,7 +21,9 @@ loaderBtn.addEventListener('click', () => {
     loaderImg.classList.add('d-inline-block');
     setTimeout(() => {
          page++;
-         showProducts();
+         showProducts()
+             .then(() => productQty(cart));
+
          loaderImg.classList.remove('d-inline-block');
     }, 1000);
 });
@@ -55,8 +57,23 @@ function getCartSum(items) {
     return cartSum;
 }
 
+function productQty(items) {
+    document.querySelectorAll('.product-cart-qty').forEach(item => {
+        const id = item.dataset.id;
+
+        if (id in items) {
+            item.innerText = items[id]['qty'];
+        } else {
+            item.innerText = '';
+        }
+    });
+}
+
+// Init app
 let cart = getCart();
+
 getCartSum(cart);
+productQty(cart);
 
 // Add listener for add product
 productsContainer.addEventListener('click', (e) => {
@@ -66,7 +83,7 @@ productsContainer.addEventListener('click', (e) => {
         // console.log(JSON.parse(e.target.dataset.product));
         add2Cart(JSON.parse(e.target.dataset.product));
         setTimeout(() => {
-            e.target.classList.remove('animate__rubberBand');
+            te.target.classList.remove('animate__rubberBand');
         }, 1000);
     }
 });
