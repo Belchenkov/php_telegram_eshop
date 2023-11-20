@@ -1,7 +1,12 @@
+const tg = window.Telegram.WebApp;
 const productsContainer = document.getElementById('products-list');
 const loaderBtn = document.getElementById('loader-btn');
 const loaderImg = document.getElementById('loader-img');
+const cartTable = document.querySelector('.table');
+
 let page = 1;
+tg.ready();
+tg.expand();
 
 async function getProducts() {
     const res = await fetch(`page2.php?page=${page}`);
@@ -35,7 +40,7 @@ function getCart(setCart = false) {
     return localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : {};
 }
 
-function add2Cart(product) {
+function add2Cart(product, cart) {
     let id = product.id;
     if (id in cart) {
         // console.log(cart[id]['qty'], id);
@@ -44,8 +49,8 @@ function add2Cart(product) {
         cart[id] = product;
         cart[id]['qty'] = 1;
     }
-    getCart(cart);
-    getCartSum(cart);
+
+    init(cart);
 }
 
 function getCartSum(items) {
@@ -59,21 +64,61 @@ function getCartSum(items) {
 
 function productQty(items) {
     document.querySelectorAll('.product-cart-qty').forEach(item => {
-        const id = item.dataset.id;
-
+        let id = item.dataset.id;
         if (id in items) {
             item.innerText = items[id]['qty'];
         } else {
             item.innerText = '';
         }
-    });
+    })
+}
+
+function cartContent(items) {
+    let cartTableBody = document.querySelector('.table tbody');
+    let cartEmpty = document.querySelector('.empty-cart');
+    let qty = Object.keys(items).length;
+
+    if (qty) {
+        tg.MainButton.show();
+        tg.MainButton.setParams({
+            text: `CHECKOUT: ${getCartSum(items)}$`,
+            color: '#d7b300'
+        });
+
+        cartTable.classList.remove('d-none');
+        cartEmpty.classList.remove('d-block');
+        cartEmpty.classList.add('d-none');
+
+        cartTableBody.innerHTML = '';
+        Object.keys(items).forEach(key => {
+            cartTableBody.innerHTML += `
+                                <tr class="align-middle animate__animated">
+                                    <th scope="row">${key}</th>
+                                    <td><img src="img/${items[key]['img']}" class="cart-img" alt=""></td>
+                                    <td>${items[key]['title']}</td>
+                                    <td>${items[key]['qty']}</td>
+                                    <td>${items[key]['price']}</td>
+                                    <td data-id="${key}"><button class="btn del-item">🗑</button></td>
+                                </tr>
+                                `;
+        });
+    } else {
+        tg.MainButton.hide();
+        cartTableBody.innerHTML = '';
+        cartTable.classList.add('d-none');
+        cartEmpty.classList.remove('d-none');
+        cartEmpty.classList.add('d-block');
+    }
+}
+
+function init(cart) {
+    getCartSum(cart);
+    productQty(cart);
+    cartContent(cart);
 }
 
 // Init app
-let cart = getCart();
-
-getCartSum(cart);
-productQty(cart);
+init(getCart());
 
 // Add listener for add product
 productsContainer.addEventListener('click', (e) => {
@@ -81,9 +126,10 @@ productsContainer.addEventListener('click', (e) => {
         e.preventDefault();
         e.target.classList.add('animate__rubberBand');
         // console.log(JSON.parse(e.target.dataset.product));
-        add2Cart(JSON.parse(e.target.dataset.product));
+        add2Cart(JSON.parse(e.target.dataset.product), getCart());
         setTimeout(() => {
             te.target.classList.remove('animate__rubberBand');
         }, 1000);
     }
 });
+
