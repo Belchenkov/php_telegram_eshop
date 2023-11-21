@@ -133,3 +133,18 @@ productsContainer.addEventListener('click', (e) => {
     }
 });
 
+// Add listener for remove product
+cartTable.addEventListener('click', (e) => {
+    const target = e.target.closest('.del-item');
+
+    if (target) {
+        const id = target.parentElement.dataset.id;
+        target.parentElement.parentElement.classList.add('animate__zoomOut');
+        setTimeout(() => {
+            const cart = getCart();
+            delete cart[id];
+            init(cart);
+        }, 500);
+    }
+});
+
