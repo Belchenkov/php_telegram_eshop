@@ -148,3 +148,19 @@ cartTable.addEventListener('click', (e) => {
     }
 });
 
+tg.MainButton.onClick(() => {
+    fetch('../index.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify({
+            query_id: tg.initDataUnsafe.query_id,
+            user: tg.initDataUnsafe.user,
+            cart: getCart(),
+            total_sum: getCartSum(getCart()),
+        }),
+    })
+        .then(res => res.json())
+        .then(data => res.json());
+});

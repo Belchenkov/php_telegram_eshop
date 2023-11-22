@@ -26,6 +26,15 @@ $chat_id = $update['message']['chat']['id'] ?? 0;
 $text = $update['message']['text'] ?? '';
 $name = $update['message']['from']['first_name'] ?? 'Guest';
 
+if (isset($update['message']['chat']['id'])) {
+    $chat_id = $update['message']['chat']['id'];
+} elseif (isset($update['user']['id'])) {
+    $chat_id = (int)$update['user']['id'];
+    $query_id = $update['query_id'] ?? '';
+    $cart = $update['cart'] ?? [];
+    $total_sum = $update['total_sum'] ?? 0;
+}
+
 if (!$chat_id) {
     die;
 }
@@ -96,6 +105,9 @@ if ($text === '/start') {
         'text' => "Button: {$btn}" . PHP_EOL . "<pre>" . print_r($data, 1) . "</pre>",
         'parse_mode' => 'HTML',
     ]);
+} elseif (!empty($query_id)) {
+    echo json_encode(['res' => true, 'answer' => 'OK']);
+    die;
 } else {
     $telegram->sendMessage([
         'chat_id' => $chat_id,
