@@ -106,6 +106,24 @@ if ($text === '/start') {
         'parse_mode' => 'HTML',
     ]);
 } elseif (!empty($query_id)) {
+//    send_request('answerWebAppQuery', [
+//        'web_app_query_id' => $query_id,
+//        'result' => json_encode([
+//            'type' => 'article',
+//            'id' => $query_id,
+//            'title' => 'test query',
+//            'input_message_content' => [
+//                'message_text' => 'test query!!!',
+//            ]
+//        ]),
+//    ]);
+
+    $telegram->sendMessage([
+        'chat_id' => $chat_id,
+        'text' => "Sum: {$total_sum}, Cart:" . PHP_EOL . "<pre>" . print_r($cart, 1) . "</pre>",
+        'parse_mode' => 'HTML',
+    ]);
+
     echo json_encode(['res' => true, 'answer' => 'OK']);
     die;
 } else {

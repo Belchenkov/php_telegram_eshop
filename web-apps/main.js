@@ -162,5 +162,12 @@ tg.MainButton.onClick(() => {
         }),
     })
         .then(res => res.json())
-        .then(data => res.json());
+        .then(data => {
+            if (data?.res) {
+                tg.close();
+                return;
+            }
+
+            alert(data.answer);
+        });
 });
