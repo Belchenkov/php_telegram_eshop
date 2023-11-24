@@ -52,3 +52,29 @@ function get_start(int $page, int $per_page): int
 {
     return ($page - 1) * $per_page;
 }
+
+function check_cart(array $cart, int $total_sum): bool
+{
+    global $pdo;
+    $ids = array_keys($cart);
+    $in_placeholders = rtrim(str_repeat('?,', count($ids)), ',');
+
+    $stmt = $pdo->prepare("SELECT id, price FROM products WHERE id IN ($in_placeholders)");
+    $stmt->execute($ids);
+    $products = $stmt->fetchAll();
+
+    if (count($products) != count($ids)) {
+        return false;
+    }
+
+    $sum = 0;
+    foreach ($products as $product) {
+        if (!isset($cart[$product['id']]) || ($cart[$product['id']]['price'] != $product['price'])) {
+            return false;
+        }
+        $sum += $product['price'] * $cart[$product['id']]['qty'];
+    }
+
+    return $sum == $total_sum;
+}
+
