@@ -105,24 +105,30 @@ if ($text === '/start') {
         'text' => "Button: {$btn}" . PHP_EOL . "<pre>" . print_r($data, 1) . "</pre>",
         'parse_mode' => 'HTML',
     ]);
-} elseif (!empty($query_id)) {
-//    send_request('answerWebAppQuery', [
-//        'web_app_query_id' => $query_id,
-//        'result' => json_encode([
-//            'type' => 'article',
-//            'id' => $query_id,
-//            'title' => 'test query',
-//            'input_message_content' => [
-//                'message_text' => 'test query!!!',
-//            ]
-//        ]),
-//    ]);
+} elseif (!empty($query_id) && !empty($cart) && !empty($total_sum)) {
+    if (check_cart($cart, $total_sum)) {
+        $telegram->sendMessage([
+            'chat_id' => $chat_id,
+            'text' => "Cart OK",
+            'parse_mode' => 'HTML',
+        ]);
 
-    $telegram->sendMessage([
-        'chat_id' => $chat_id,
-        'text' => "Sum: {$total_sum}, Cart:" . PHP_EOL . "<pre>" . print_r($cart, 1) . "</pre>",
-        'parse_mode' => 'HTML',
-    ]);
+        $res = [
+            'res' => true,
+            'answer' => 'Cart OK',
+        ];
+    } else {
+        $telegram->sendMessage([
+            'chat_id' => $chat_id,
+            'text' => "Cart Error",
+            'parse_mode' => 'HTML',
+        ]);
+
+        $res = [
+            'res' => false,
+            'answer' => 'Cart Error',
+        ];
+    }
 
     echo json_encode(['res' => true, 'answer' => 'OK']);
     die;

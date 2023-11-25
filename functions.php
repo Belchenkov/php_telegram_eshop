@@ -78,3 +78,24 @@ function check_cart(array $cart, int $total_sum): bool
     return $sum == $total_sum;
 }
 
+function add_order(int $chat_id, \Telegram\Bot\Objects\Update $update): bool
+{
+    global $pdo;
+    $stmt = $pdo->prepare("INSERT INTO orders (chat_id, query_id, total_sum) VALUES (?, ?, ?)");
+    $stmt->execute([$chat_id, $update['query_id'], $update['total_sum']]);
+    $order_id = $pdo->lastInsertId();
+
+    $sql_part = '';
+    $binds = [];
+
+    foreach ($update['cart'] as $item) {
+        $sql_part .= "(?,?,?,?,?),";
+        $binds = array_merge($binds, [$order_id, $item['product_id'], $item['title'], $item['price'], $item['qty']]);
+    }
+
+    $sql_part = rtrim($sql_part, ','); // (?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?)
+    $stmt = $pdo->prepare("INSERT INTO order_products (order_id, product_id, title, price, qty) VALUES $sql_part");
+
+    return $stmt->execute($binds);
+}
+
