@@ -40,7 +40,6 @@ if (isset($_GET['page'])) {
     <script src="telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="main.css">
-    <script src="./telegram-web-app.js"></script>
 </head>
 <body>
 
@@ -124,7 +123,7 @@ if (isset($_GET['page'])) {
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="./main.js"></script>
+<script src="./main.js?v=1.0"></script>
 
 </body>
 </html>

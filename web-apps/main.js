@@ -58,7 +58,7 @@ function getCartSum(items) {
         const [key, value] = values;
         return total + (value['qty'] * value['price']);
     }, 0);
-    document.querySelector('.cart-sum').innerText = cartSum + '$';
+    document.querySelector('.cart-sum').innerText = (cartSum / 100) + '$';
     return cartSum;
 }
 
@@ -81,7 +81,7 @@ function cartContent(items) {
     if (qty) {
         tg.MainButton.show();
         tg.MainButton.setParams({
-            text: `CHECKOUT: ${getCartSum(items)}$`,
+            text: `CHECKOUT: ${getCartSum(items) / 100}$`,
             color: '#d7b300'
         });
 
