@@ -96,6 +96,6 @@ function add_order(int $chat_id, \Telegram\Bot\Objects\Update $update): bool
     $sql_part = rtrim($sql_part, ','); // (?,?,?,?,?),(?,?,?,?,?),(?,?,?,?,?)
     $stmt = $pdo->prepare("INSERT INTO order_products (order_id, product_id, title, price, qty) VALUES $sql_part");
 
-    return $stmt->execute($binds);
+    return $stmt->execute($binds) ? $order_id: false;
 }
 

@@ -113,6 +113,7 @@ function cartContent(items) {
 
 function init(cart) {
     getCartSum(cart);
+    getCartSum(cart);
     productQty(cart);
     cartContent(cart);
 }
@@ -164,8 +165,12 @@ tg.MainButton.onClick(() => {
         .then(res => res.json())
         .then(data => {
             if (data?.res) {
+                const cart = getCart({});
+                getCartSum(cart);
+                productQty(cart);
+                cartContent(cart);
+
                 tg.close();
-                return;
             }
 
             alert(data.answer);

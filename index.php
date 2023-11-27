@@ -107,7 +107,7 @@ if ($text === '/start') {
     ]);
 } elseif (!empty($query_id) && !empty($cart) && !empty($total_sum)) {
     if (check_cart($cart, $total_sum)) {
-        if (!add_order($chat_id, $update)) {
+        if (!$order_id = add_order($chat_id, $update)) {
             $telegram->sendMessage([
                 'chat_id' => $chat_id,
                 'text' => "Error add order",
@@ -123,16 +123,36 @@ if ($text === '/start') {
             die;
         }
 
-        $telegram->sendMessage([
-            'chat_id' => $chat_id,
-            'text' => "Order added",
-            'parse_mode' => 'HTML',
-        ]);
+        $order_products = [];
+        foreach ($cart as $item) {
+            $order_products[] = [
+                'label' => "{$item['title']} x {$item['qty']}",
+                'amount' => $item['price'] * $item['qty'],
+            ];
+        }
 
-        $res = [
-            'res' => true,
-            'answer' => 'Order added',
-        ];
+        try {
+            $telegram->sendInvoice([
+                'chat_id' => $chat_id,
+                'title' => "Заказ № {$order_id}",
+                'description' => "Оплата заказа",
+                'payload' => $order_id,
+                'provider_token' => STRIPE_TOKEN,
+                'currency' => 'USD',
+                'prices' => $order_products,
+                'photo_url' => PAYMENT_IMG,
+                'photo_width' => 640,
+                'photo_height' => 427,
+            ]);
+
+            $res = ['res' => true];
+            echo json_encode($res);
+            die;
+        } catch (\Telegram\Bot\Exceptions\TelegramSDKException $e) {
+            $res = ['res' => false, 'answer' => $e->getMessage()];
+            echo json_encode($res);
+            die;
+        }
     } else {
         $telegram->sendMessage([
             'chat_id' => $chat_id,
