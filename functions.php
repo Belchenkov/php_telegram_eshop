@@ -99,3 +99,10 @@ function add_order(int $chat_id, \Telegram\Bot\Objects\Update $update): bool
     return $stmt->execute($binds) ? $order_id: false;
 }
 
+function toggle_order_status(int $order_id, string $payment_id): bool
+{
+    global $pdo;
+    $stmt = $pdo->prepare("UPDATE orders SET status = 1, payment_id = ? WHERE id = ?");
+    return $stmt->execute([$payment_id, $order_id]);
+}
+
